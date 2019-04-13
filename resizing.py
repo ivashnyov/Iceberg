@@ -37,4 +37,7 @@ def image_resizing(data, size):
                     print(e)
                     total_errors += 1
 
+    os.chdir(parent_dir)
     print(total_images_resized, 'images were resized with', total_errors, 'errors')
+
+

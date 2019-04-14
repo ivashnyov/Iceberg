@@ -152,10 +152,11 @@ def evaluate_model(model, eval_data):
 
 def import_model(filename):
     """
-    Importing model. I have to do it in the same way due to issue https://github.com/tensorflow/tensorflow/issues/14356
+    Importing model. I have to do it in this way due to issue https://github.com/tensorflow/tensorflow/issues/14356
     :param filename: name of model
     :return: loaded model
     """
+
     global model
     model = load_model(filename)
     global graph
@@ -173,7 +174,7 @@ def predict_class(model, image_path):
 
     # This is need due to the same issue as in import_model function
     with graph.as_default():
-        # Load image
+        # Load imageуц
         img = image.load_img(image_path)
         img = img.resize((128, 128), Image.ANTIALIAS)
         x = image.img_to_array(img)

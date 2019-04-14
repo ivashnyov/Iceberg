@@ -1,9 +1,11 @@
 from keras.preprocessing import image
-from keras.models import Sequential
+from keras.models import Sequential, load_model
 from keras.layers import Dense, Conv2D, Flatten, MaxPool2D, Lambda
 from keras import optimizers
 import os
 import matplotlib.pyplot as plt
+from PIL import Image
+import tensorflow as tf
 
 
 def create_model(input_shape=(128, 128, 3), learning_rate=0.001):
@@ -148,5 +150,33 @@ def evaluate_model(model, eval_data):
     print("Loss", score[0], "Accuracy", score[1])
 
 
-#def predict_class(model, image_path):
+def import_model(filename):
+    """
+    Importing model. I have to do it in the same way due to issue https://github.com/tensorflow/tensorflow/issues/14356
+    :param filename: name of model
+    :return: loaded model
+    """
+    global model
+    model = load_model(filename)
+    global graph
+    graph = tf.get_default_graph()
+    return model
 
+
+def predict_class(model, image_path):
+    """
+    Predict class of given image
+    :param model: model which will make prediction
+    :param image_path: path to image
+    :return: prediction from 0 to 1
+    """
+
+    # This is need due to the same issue as in import_model function
+    with graph.as_default():
+        # Load image
+        img = image.load_img(image_path)
+        img = img.resize((128, 128), Image.ANTIALIAS)
+        x = image.img_to_array(img)
+        x = x.reshape((1, x.shape[0], x.shape[1], x.shape[2]))
+        prediction = model.predict(x)
+        return prediction
